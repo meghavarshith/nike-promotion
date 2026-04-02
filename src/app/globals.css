@@ -1,26 +1,192 @@
-@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap');
 
+/* ── Design tokens ──────────────────────────────────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg:          #050505;
+  --text:        #ffffff;
+  --red:         #E8291C;
+  --amber:       #F5A623;
+  --teal:        #00E887;
+  --blue:        #4AABF0;
+  --glass:       rgba(8,8,8,0.55);
+  --glass-b:     rgba(255,255,255,0.07);
+  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-inout:  cubic-bezier(0.45, 0, 0.55, 1);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ── Reset ──────────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0; padding: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  width: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overscroll-behavior: none;   /* prevents bounce that breaks sticky */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* CRITICAL: main must be display:block for position:sticky */
+main { display: block; }
+
+*:focus  { outline: none; }
+canvas   { display: block; }
+h1,h2,h3,p,ul,li { margin: 0; padding: 0; }
+
+/* ── Navbar ─────────────────────────────────────────────────────────────────── */
+.navbar {
+  position: fixed; top: 0; left: 0; width: 100%;
+  z-index: 200;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 1.4rem 3.2rem;
+  transition: background 0.6s var(--ease-inout),
+              border-color 0.6s ease,
+              padding 0.5s var(--ease-out);
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.navbar.scrolled {
+  background: rgba(5,5,5,0.78);
+  backdrop-filter: blur(28px) saturate(1.4);
+  -webkit-backdrop-filter: blur(28px) saturate(1.4);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  padding: 1rem 3.2rem;
 }
+
+.nav-brand {
+  font-size: 14px; font-weight: 800;
+  letter-spacing: 0.10em; text-transform: uppercase;
+  color: #0D0D0D;
+  transition: color 0.5s ease;
+  cursor: pointer;
+}
+.navbar.scrolled .nav-brand { color: rgba(255,255,255,0.90); }
+
+.nav-links {
+  display: flex; gap: 2.4rem; list-style: none;
+}
+.nav-links li {
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: rgba(13,13,13,0.50);
+  cursor: pointer; position: relative;
+  transition: color 0.3s ease;
+  padding-bottom: 2px;
+}
+.nav-links li::after {
+  content: ''; position: absolute; bottom: -1px; left: 0;
+  width: 0; height: 1px;
+  background: var(--red);
+  transition: width 0.35s var(--ease-out);
+}
+.nav-links li:hover             { color: #0D0D0D; }
+.nav-links li:hover::after      { width: 100%; }
+
+.navbar.scrolled .nav-links li        { color: rgba(255,255,255,0.42); }
+.navbar.scrolled .nav-links li:hover  { color: rgba(255,255,255,0.92); }
+
+/* ── Buttons ─────────────────────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 0.85rem 2rem;
+  font-family: inherit;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: 1px;
+  position: relative; overflow: hidden;
+  transition: background 0.35s var(--ease-out),
+              color 0.35s ease,
+              border-color 0.35s ease,
+              box-shadow 0.35s ease,
+              transform 0.25s var(--ease-out);
+  white-space: nowrap;
+}
+.btn-sm { padding: 0.65rem 1.5rem; font-size: 10px; }
+
+/* Shimmer sweep */
+.btn::after {
+  content: '';
+  position: absolute; top: 0; left: -120%;
+  width: 60%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.10), transparent);
+  transition: left 0.55s ease;
+  pointer-events: none;
+}
+.btn:hover::after { left: 160%; }
+.btn:hover        { transform: translateY(-1px); }
+.btn:active       { transform: translateY(0); }
+
+/* — Primary (dark fill, white text) — hero on white bg */
+.btn-primary {
+  background: #0D0D0D; color: #fff;
+  border-color: #0D0D0D;
+}
+.btn-primary:hover {
+  background: #2a2a2a;
+  box-shadow: 0 6px 22px rgba(0,0,0,0.22);
+}
+
+/* — Ghost dark (outline, dark text) — secondary on white bg */
+.btn-ghost-dark {
+  background: transparent; color: rgba(0,0,0,0.6);
+  border-color: rgba(0,0,0,0.20);
+}
+.btn-ghost-dark:hover {
+  border-color: rgba(0,0,0,0.45);
+  color: #0D0D0D;
+  background: rgba(0,0,0,0.04);
+}
+
+/* — Accent red — primary CTA on dark bg */
+.btn-accent {
+  background: var(--red); color: #fff;
+  border-color: var(--red);
+}
+.btn-accent:hover {
+  background: #cc2016;
+  box-shadow: 0 8px 28px rgba(232,41,28,0.38);
+}
+
+/* — Ghost (outline, white text) — secondary on dark bg */
+.btn-ghost {
+  background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.72);
+  border-color: rgba(255,255,255,0.14);
+  backdrop-filter: blur(8px);
+}
+.btn-ghost:hover {
+  background: rgba(255,255,255,0.09);
+  border-color: rgba(255,255,255,0.35);
+  color: #fff;
+}
+
+/* — Navbar Buy Now */
+.btn-navbar-buy {
+  background: transparent; color: var(--red);
+  border-color: var(--red);
+  font-size: 10px; padding: 0.55rem 1.35rem;
+}
+.btn-navbar-buy:hover {
+  background: var(--red); color: #fff;
+  box-shadow: 0 0 18px rgba(232,41,28,0.40);
+}
+
+/* ── Scroll pulse animation (hero line) ─────────────────────────────────────── */
+@keyframes scrollPulse {
+  0%   { transform: scaleY(0); transform-origin: top; opacity: 0; }
+  30%  { transform: scaleY(1); transform-origin: top; opacity: 1; }
+  70%  { transform: scaleY(1); transform-origin: bottom; opacity: 1; }
+  100% { transform: scaleY(0); transform-origin: bottom; opacity: 0; }
+}
+
+/* ── Cinematic gradient shift (subtle bg movement in dark mode) ──────────────── */
+@keyframes gradDrift {
+  0%, 100% { background-position: 0% 50%; }
+  50%       { background-position: 100% 50%; }
+}
+
+/* ── Utility ─────────────────────────────────────────────────────────────────── */
+.nowrap   { white-space: nowrap; }
+.text-center { text-align: center; }
