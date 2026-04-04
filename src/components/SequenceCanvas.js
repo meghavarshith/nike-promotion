@@ -113,7 +113,14 @@ export default function SequenceCanvas({ children }) {
     const { width: cw, height: ch } = canvas;
     const iw = img.naturalWidth, ih = img.naturalHeight;
     if (!cw || !ch) return;
-    const s = Math.max(cw / iw, ch / ih);
+
+    let s = Math.max(cw / iw, ch / ih);
+    if (cw <= 768) {
+      // Modify scaling for mobile to bound mainly by width (allow letterboxing/slight zoom)
+      // This prevents the horizontally animated shoe pieces from flying out of the phone screen
+      s = Math.max((cw / iw) * 2.2, (ch / ih) * 0.55);
+    }
+    
     ctx.drawImage(img, (cw - iw * s) / 2, (ch - ih * s) / 2, iw * s, ih * s);
   }, []);
 
@@ -143,7 +150,8 @@ export default function SequenceCanvas({ children }) {
       <motion.div
         style={{
           position: 'sticky', top: 0,
-          width: '100%', height: '100vh',
+          width: '100%', height: '100dvh', // Use dvh to prevent jumpiness on mobile browser toolbars
+          minHeight: '100vh',
           overflow: 'hidden',
           backgroundColor: bgColor,
         }}

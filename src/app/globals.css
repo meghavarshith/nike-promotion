@@ -25,17 +25,17 @@ html, body {
   width: 100%;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overscroll-behavior: none;   /* prevents bounce that breaks sticky */
+  overscroll-behavior: none;
 }
 
-/* CRITICAL: main must be display:block for position:sticky */
 main { display: block; }
-
 *:focus  { outline: none; }
 canvas   { display: block; }
 h1,h2,h3,p,ul,li { margin: 0; padding: 0; }
 
-/* ── Navbar ─────────────────────────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════════════════════
+   NAVBAR  (Desktop)
+══════════════════════════════════════════════════════════════════════════════ */
 .navbar {
   position: fixed; top: 0; left: 0; width: 100%;
   z-index: 200;
@@ -60,6 +60,7 @@ h1,h2,h3,p,ul,li { margin: 0; padding: 0; }
   color: #0D0D0D;
   transition: color 0.5s ease;
   cursor: pointer;
+  z-index: 210;
 }
 .navbar.scrolled .nav-brand { color: rgba(255,255,255,0.90); }
 
@@ -82,11 +83,38 @@ h1,h2,h3,p,ul,li { margin: 0; padding: 0; }
 }
 .nav-links li:hover             { color: #0D0D0D; }
 .nav-links li:hover::after      { width: 100%; }
-
 .navbar.scrolled .nav-links li        { color: rgba(255,255,255,0.42); }
 .navbar.scrolled .nav-links li:hover  { color: rgba(255,255,255,0.92); }
 
-/* ── Buttons ─────────────────────────────────────────────────────────────────── */
+/* Hamburger — hidden on desktop */
+.hamburger {
+  display: none;
+  background: none; border: none; cursor: pointer;
+  width: 28px; height: 20px;
+  position: relative; z-index: 210;
+  flex-direction: column; justify-content: space-between;
+  padding: 0;
+}
+.hamburger-line {
+  display: block;
+  width: 100%; height: 2px;
+  background: #0D0D0D;
+  transition: transform 0.35s var(--ease-out), opacity 0.25s ease, background 0.3s ease;
+}
+.navbar.scrolled .hamburger-line { background: rgba(255,255,255,0.9); }
+
+.hamburger-line.open:nth-child(1) { transform: translateY(9px) rotate(45deg); }
+.hamburger-line.open:nth-child(2) { opacity: 0; }
+.hamburger-line.open:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
+
+/* Mobile menu — hidden on desktop */
+.mobile-menu {
+  display: none;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   BUTTONS
+══════════════════════════════════════════════════════════════════════════════ */
 .btn {
   display: inline-flex; align-items: center; justify-content: center;
   padding: 0.85rem 2rem;
@@ -106,7 +134,6 @@ h1,h2,h3,p,ul,li { margin: 0; padding: 0; }
 }
 .btn-sm { padding: 0.65rem 1.5rem; font-size: 10px; }
 
-/* Shimmer sweep */
 .btn::after {
   content: '';
   position: absolute; top: 0; left: -120%;
@@ -119,7 +146,6 @@ h1,h2,h3,p,ul,li { margin: 0; padding: 0; }
 .btn:hover        { transform: translateY(-1px); }
 .btn:active       { transform: translateY(0); }
 
-/* — Primary (dark fill, white text) — hero on white bg */
 .btn-primary {
   background: #0D0D0D; color: #fff;
   border-color: #0D0D0D;
@@ -129,7 +155,6 @@ h1,h2,h3,p,ul,li { margin: 0; padding: 0; }
   box-shadow: 0 6px 22px rgba(0,0,0,0.22);
 }
 
-/* — Ghost dark (outline, dark text) — secondary on white bg */
 .btn-ghost-dark {
   background: transparent; color: rgba(0,0,0,0.6);
   border-color: rgba(0,0,0,0.20);
@@ -140,7 +165,6 @@ h1,h2,h3,p,ul,li { margin: 0; padding: 0; }
   background: rgba(0,0,0,0.04);
 }
 
-/* — Accent red — primary CTA on dark bg */
 .btn-accent {
   background: var(--red); color: #fff;
   border-color: var(--red);
@@ -150,7 +174,6 @@ h1,h2,h3,p,ul,li { margin: 0; padding: 0; }
   box-shadow: 0 8px 28px rgba(232,41,28,0.38);
 }
 
-/* — Ghost (outline, white text) — secondary on dark bg */
 .btn-ghost {
   background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.72);
   border-color: rgba(255,255,255,0.14);
@@ -162,7 +185,6 @@ h1,h2,h3,p,ul,li { margin: 0; padding: 0; }
   color: #fff;
 }
 
-/* — Navbar Buy Now */
 .btn-navbar-buy {
   background: transparent; color: var(--red);
   border-color: var(--red);
@@ -173,7 +195,52 @@ h1,h2,h3,p,ul,li { margin: 0; padding: 0; }
   box-shadow: 0 0 18px rgba(232,41,28,0.40);
 }
 
-/* ── Scroll pulse animation (hero line) ─────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════════════════════
+   STAGE GRID  (Desktop: 3-column flanking layout)
+══════════════════════════════════════════════════════════════════════════════ */
+.stage-grid {
+  display: grid;
+  grid-template-columns: 26vw 48vw 26vw;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+}
+
+.stage-text-panel {
+  padding-left: 4.5vw;
+  padding-right: 1vw;
+}
+
+.stage-text-right {
+  padding-right: 4.5vw;
+  padding-left: 1vw;
+  text-align: right;
+}
+
+.stage-card-right {
+  padding-right: 4.5vw;
+  padding-left: 1vw;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.stage-card-left {
+  padding-left: 4.5vw;
+  padding-right: 1vw;
+}
+
+.spec-card {
+  max-width: 240px;
+}
+
+/* ── Final payoff (Desktop) ─────────────────────────────────────────────────── */
+.final-content {
+  padding: 0 4.5vw 5vh 0;
+  text-align: right;
+  max-width: 38vw;
+}
+
+/* ── Scroll pulse animation ─────────────────────────────────────────────────── */
 @keyframes scrollPulse {
   0%   { transform: scaleY(0); transform-origin: top; opacity: 0; }
   30%  { transform: scaleY(1); transform-origin: top; opacity: 1; }
@@ -181,7 +248,6 @@ h1,h2,h3,p,ul,li { margin: 0; padding: 0; }
   100% { transform: scaleY(0); transform-origin: bottom; opacity: 0; }
 }
 
-/* ── Cinematic gradient shift (subtle bg movement in dark mode) ──────────────── */
 @keyframes gradDrift {
   0%, 100% { background-position: 0% 50%; }
   50%       { background-position: 100% 50%; }
@@ -190,3 +256,246 @@ h1,h2,h3,p,ul,li { margin: 0; padding: 0; }
 /* ── Utility ─────────────────────────────────────────────────────────────────── */
 .nowrap   { white-space: nowrap; }
 .text-center { text-align: center; }
+
+
+/* ══════════════════════════════════════════════════════════════════════════════
+                        MOBILE RESPONSIVE  (≤ 768px)
+══════════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+
+  /* ── Navbar: compact + hamburger ──────────────────────────────────────────── */
+  .navbar {
+    padding: 1rem 1.4rem;
+  }
+  .navbar.scrolled {
+    padding: 0.8rem 1.4rem;
+  }
+
+  .nav-brand {
+    font-size: 12px;
+  }
+
+  .nav-links {
+    display: none !important;
+  }
+
+  .nav-buy-desktop {
+    display: none !important;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
+  /* ── Mobile full-screen menu ──────────────────────────────────────────────── */
+  .mobile-menu {
+    display: flex;
+    position: fixed;
+    inset: 0;
+    z-index: 199;
+    background: rgba(5,5,5,0.96);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s var(--ease-out);
+  }
+
+  .mobile-menu-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .mobile-menu-links {
+    list-style: none;
+    padding: 0; margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .mobile-menu-links li {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.7);
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+
+  .mobile-menu-links li:active {
+    color: #fff;
+  }
+
+  /* ── Hero section ─────────────────────────────────────────────────────────── */
+  .hero-content {
+    padding: 0 5vw !important;
+    max-width: 100% !important;
+  }
+
+  .hero-tagline {
+    font-size: 11px !important;
+    letter-spacing: 0.15em !important;
+    margin-top: 1.4rem !important;
+  }
+
+  .hero-ctas {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 0.8rem !important;
+    margin-top: 2rem !important;
+  }
+
+  .hero-ctas .btn {
+    width: 200px;
+  }
+
+  .scroll-hint {
+    margin-top: 2rem !important;
+  }
+
+  /* ── Stage grids: stack vertically ────────────────────────────────────────── */
+  .stage-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-end !important;
+    align-items: stretch !important;
+    padding: 0 5vw;
+    height: 100%;
+  }
+
+  /* Shoe zone takes up most of the screen */
+  .stage-shoe-zone {
+    flex: 1;
+    min-height: 48vh;
+  }
+
+  /* Text panel → bottom of screen, left-aligned */
+  .stage-text-panel {
+    padding: 0 !important;
+    margin-bottom: 1.2rem;
+    order: 2;
+  }
+
+  .stage-text-right {
+    padding: 0 !important;
+    text-align: left !important;
+    order: 2;
+  }
+
+  .stage-text-right .stage-headline,
+  .stage-text-right .stage-subtext {
+    text-align: left !important;
+  }
+
+  .stage-text-right > div {
+    justify-content: flex-start !important;
+  }
+
+  /* Card → below text, compact */
+  .stage-card-panel {
+    padding: 0 !important;
+    display: flex !important;
+    justify-content: flex-start !important;
+    margin-bottom: 2.5vh;
+    order: 3;
+  }
+
+  .spec-card {
+    max-width: 100% !important;
+    width: 100%;
+    padding: 1.2rem 1.4rem !important;
+  }
+
+  .stage-headline {
+    font-size: clamp(24px, 7vw, 38px) !important;
+  }
+
+  .stage-subtext {
+    font-size: 11px !important;
+    margin-top: 0.5rem !important;
+  }
+
+  /* ── Final payoff ─────────────────────────────────────────────────────────── */
+  .final-content {
+    padding: 0 5vw 4vh !important;
+    text-align: left !important;
+    max-width: 100% !important;
+  }
+
+  .final-ctas {
+    justify-content: flex-start !important;
+  }
+
+  /* ── Progress indicator: dots only, no labels ─────────────────────────────── */
+  /* (handled in component, but reduce gap) */
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+                        SMALL MOBILE  (≤ 480px)
+══════════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 480px) {
+
+  .navbar {
+    padding: 0.9rem 1rem;
+  }
+
+  .nav-brand {
+    font-size: 11px;
+    letter-spacing: 0.06em;
+  }
+
+  .hero-content {
+    padding: 0 4vw !important;
+  }
+
+  .hero-ctas .btn {
+    width: 180px;
+    padding: 0.75rem 1.5rem;
+    font-size: 10px;
+  }
+
+  .stage-grid {
+    padding: 0 4vw;
+  }
+
+  .spec-card {
+    padding: 1rem 1.2rem !important;
+  }
+
+  .spec-card p,
+  .spec-card span {
+    font-size: 10px !important;
+  }
+
+  .final-content {
+    padding: 0 4vw 3vh !important;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+                        TABLET  (769px – 1024px)
+══════════════════════════════════════════════════════════════════════════════ */
+@media (min-width: 769px) and (max-width: 1024px) {
+
+  .stage-grid {
+    grid-template-columns: 28vw 44vw 28vw;
+  }
+
+  .spec-card {
+    max-width: 220px;
+  }
+
+  .nav-links {
+    gap: 1.5rem;
+  }
+
+  .nav-links li {
+    font-size: 10px;
+  }
+}

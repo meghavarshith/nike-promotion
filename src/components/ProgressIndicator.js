@@ -14,6 +14,14 @@ export default function ProgressIndicator() {
   const { scrollYProgress } = useScroll();
   const [active, setActive] = useState(0);
   const [visible, setVisible] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   useEffect(() => {
     return scrollYProgress.on('change', (v) => {
@@ -34,13 +42,13 @@ export default function ProgressIndicator() {
   return (
     <div style={{
       position: 'fixed',
-      right: '2vw',
+      right: isMobile ? '3vw' : '2vw',
       top: '50%',
       transform: 'translateY(-50%)',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'flex-end',
-      gap: '1.2rem',
+      gap: isMobile ? '0.9rem' : '1.2rem',
       zIndex: 300,
       pointerEvents: 'auto',
       opacity: visible ? 1 : 0,
@@ -58,22 +66,24 @@ export default function ProgressIndicator() {
               background: 'none', border: 'none', padding: 0, cursor: 'pointer',
             }}
           >
-            {/* Label — fades in when active */}
-            <span style={{
-              fontSize: '9px', fontWeight: 700,
-              letterSpacing: '0.22em', textTransform: 'uppercase',
-              color: isActive ? s.color : 'transparent',
-              transition: 'color 0.5s ease, opacity 0.5s ease',
-              whiteSpace: 'nowrap',
-            }}>
-              {s.label}
-            </span>
+            {/* Label — hidden on mobile */}
+            {!isMobile && (
+              <span style={{
+                fontSize: '9px', fontWeight: 700,
+                letterSpacing: '0.22em', textTransform: 'uppercase',
+                color: isActive ? s.color : 'transparent',
+                transition: 'color 0.5s ease, opacity 0.5s ease',
+                whiteSpace: 'nowrap',
+              }}>
+                {s.label}
+              </span>
+            )}
 
-            {/* Dot — grows to pill when active */}
+            {/* Dot */}
             <span style={{
               display: 'block',
               width: '2px',
-              height: isActive ? '22px' : '5px',
+              height: isActive ? (isMobile ? '16px' : '22px') : (isMobile ? '4px' : '5px'),
               borderRadius: '99px',
               background: isActive ? s.color : 'rgba(255,255,255,0.18)',
               boxShadow: isActive ? `0 0 8px ${s.color}` : 'none',

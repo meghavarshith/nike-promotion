@@ -15,7 +15,7 @@ export default function TextMolecules({ text, isHero, scrollProgress, exitRange,
   return (
     <div ref={containerRef} style={{ 
       display: 'block', 
-      whiteSpace: 'nowrap',
+      whiteSpace: 'normal',
       lineHeight: style?.lineHeight || '1', 
       ...style, 
       overflow: 'visible' 
