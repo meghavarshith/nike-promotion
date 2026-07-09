@@ -6,6 +6,7 @@ export default function SequenceCanvas({ children }) {
   const canvasRef    = useRef(null);
   const containerRef = useRef(null);
   const imagesRef    = useRef([]);
+  const frameBgRef   = useRef(null);   // cached shoe-frame background color [r, g, b]
   const totalFrames  = 240;
 
   // ── Scroll tracking ──────────────────────────────────────────────────────
@@ -44,11 +45,16 @@ export default function SequenceCanvas({ children }) {
     [0,    0,    79,   79,   159,  159,  239,  239,  0,    0  ]
   );
 
-  // ── Background luminance: white → near-black → white on reassembly ───────
-  // Uses a careful S-curve so no abrupt jump is visible.
+  // ── Background luminance: light → near-black → light on reassembly ──────
+  // 0 = fully dark (#050505), 1 = fully the shoe-frame background color
+  const bgT = useTransform(smooth,
+    [0.00, 0.20, 0.32, 0.64, 0.85, 0.92, 1.00],
+    [1.0,  1.0,  0.0,  0.0,  0.0,  0.3,  1.0]
+  );
+  // For the wrapper div bg (CSS), keep a luminance-based value
   const bgL = useTransform(smooth,
     [0.00, 0.20, 0.32, 0.64, 0.85, 0.92, 1.00],
-    [248,  245,  12,    4,    4,   60,  248]
+    [96,   96,   5,    2,    2,    24,   96]
   );
   const bgColor = useMotionTemplate`hsl(0, 0%, ${bgL}%)`;
 
@@ -98,13 +104,28 @@ export default function SequenceCanvas({ children }) {
       imgs.push(img);
     }
     imagesRef.current = imgs;
-    const drawFirst = () => drawFrame(0);
-    imgs[0].onload = drawFirst;
-    if (imgs[0].complete) drawFirst();
+
+    // When the first frame loads, sample its corner pixel to get the
+    // exact background color of the shoe photography
+    const onFirstLoad = () => {
+      try {
+        const tmp = document.createElement('canvas');
+        tmp.width = 1; tmp.height = 1;
+        const tmpCtx = tmp.getContext('2d');
+        tmpCtx.drawImage(imgs[0], 0, 0, 1, 1);
+        const px = tmpCtx.getImageData(0, 0, 1, 1).data;
+        frameBgRef.current = [px[0], px[1], px[2]];
+      } catch (e) {
+        frameBgRef.current = [242, 242, 238]; // safe fallback
+      }
+      drawFrame(0, 1.0);
+    };
+    imgs[0].onload = onFirstLoad;
+    if (imgs[0].complete) onFirstLoad();
   }, []); // eslint-disable-line
 
   // ── Draw frame ────────────────────────────────────────────────────────────
-  const drawFrame = useCallback((index, bgLuminance) => {
+  const drawFrame = useCallback((index, blendT) => {
     const canvas = canvasRef.current;
     const idx    = Math.max(0, Math.min(totalFrames - 1, Math.round(index)));
     const img    = imagesRef.current[idx];
@@ -114,14 +135,16 @@ export default function SequenceCanvas({ children }) {
     const iw = img.naturalWidth, ih = img.naturalHeight;
     if (!cw || !ch) return;
 
-    // Fill the canvas with the current background luminance before drawing
-    // This eliminates the black-bar mismatch on mobile where the shoe
-    // image doesn't cover the full canvas
-    if (bgLuminance !== undefined) {
-      const v = Math.round(Math.max(0, Math.min(255, bgLuminance * 2.55)));
-      ctx.fillStyle = `rgb(${v},${v},${v})`;
-      ctx.fillRect(0, 0, cw, ch);
-    }
+    // Fill canvas with a color that blends between the shoe-frame bg
+    // and near-black, perfectly matching the shoe image at every scroll point
+    const fbg = frameBgRef.current || [242, 242, 238];
+    const t   = blendT !== undefined ? Math.max(0, Math.min(1, blendT)) : 1.0;
+    const dr  = 5, dg = 5, db = 5; // dark color (#050505)
+    const r   = Math.round(dr + (fbg[0] - dr) * t);
+    const g   = Math.round(dg + (fbg[1] - dg) * t);
+    const b   = Math.round(db + (fbg[2] - db) * t);
+    ctx.fillStyle = `rgb(${r},${g},${b})`;
+    ctx.fillRect(0, 0, cw, ch);
 
     // Scale the shoe to fit the viewport
     let s, yOffset = 0;
@@ -139,9 +162,11 @@ export default function SequenceCanvas({ children }) {
   }, []);
 
   useEffect(() => {
-    const unsub = frameIndex.on('change', (v) => drawFrame(v, bgL.get()));
+    const unsub = smooth.on('change', () => {
+      drawFrame(frameIndex.get(), bgT.get());
+    });
     return unsub;
-  }, [frameIndex, drawFrame, bgL]);
+  }, [smooth, frameIndex, bgT, drawFrame]);
 
   useEffect(() => {
     const onResize = () => {
@@ -150,12 +175,12 @@ export default function SequenceCanvas({ children }) {
       const dpr = window.devicePixelRatio || 1;
       c.width  = window.innerWidth  * dpr;
       c.height = window.innerHeight * dpr;
-      drawFrame(frameIndex.get(), bgL.get());
+      drawFrame(frameIndex.get(), bgT.get());
     };
     onResize();
     window.addEventListener('resize', onResize);
     return () => window.removeEventListener('resize', onResize);
-  }, [frameIndex, drawFrame, bgL]);
+  }, [frameIndex, drawFrame, bgT]);
 
   return (
     <div
