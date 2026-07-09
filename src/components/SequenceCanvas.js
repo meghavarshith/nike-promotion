@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useEffect, useCallback } from 'react';
+import React, { useRef, useEffect, useCallback, useState } from 'react';
 import { useScroll, useTransform, useSpring, motion, useMotionTemplate } from 'framer-motion';
 
 export default function SequenceCanvas({ children }) {
@@ -7,6 +7,7 @@ export default function SequenceCanvas({ children }) {
   const containerRef = useRef(null);
   const imagesRef    = useRef([]);
   const frameBgRef   = useRef(null);   // cached shoe-frame background color [r, g, b]
+  const [fbg, setFbg] = useState([242, 242, 238]);
   const totalFrames  = 240;
 
   // ── Scroll tracking ──────────────────────────────────────────────────────
@@ -51,12 +52,14 @@ export default function SequenceCanvas({ children }) {
     [0.00, 0.20, 0.32, 0.64, 0.85, 0.92, 1.00],
     [1.0,  1.0,  0.0,  0.0,  0.0,  0.3,  1.0]
   );
-  // For the wrapper div bg (CSS), keep a luminance-based value
-  const bgL = useTransform(smooth,
-    [0.00, 0.20, 0.32, 0.64, 0.85, 0.92, 1.00],
-    [96,   96,   5,    2,    2,    24,   96]
-  );
-  const bgColor = useMotionTemplate`hsl(0, 0%, ${bgL}%)`;
+  // For the wrapper div bg, blend exactly between the shoe-frame bg and near-black in sync with the canvas background
+  const bgColor = useTransform(bgT, (t) => {
+    const dr  = 5, dg = 5, db = 5; // dark color (#050505)
+    const r   = Math.round(dr + (fbg[0] - dr) * t);
+    const g   = Math.round(dg + (fbg[1] - dg) * t);
+    const b   = Math.round(db + (fbg[2] - db) * t);
+    return `rgb(${r},${g},${b})`;
+  });
 
   // ── Vignette ─────────────────────────────────────────────────────────────
   // Only active during dark stages. Fades completely for hero + final.
@@ -114,7 +117,9 @@ export default function SequenceCanvas({ children }) {
         const tmpCtx = tmp.getContext('2d');
         tmpCtx.drawImage(imgs[0], 0, 0, 1, 1);
         const px = tmpCtx.getImageData(0, 0, 1, 1).data;
-        frameBgRef.current = [px[0], px[1], px[2]];
+        const color = [px[0], px[1], px[2]];
+        frameBgRef.current = color;
+        setFbg(color);
       } catch (e) {
         frameBgRef.current = [242, 242, 238]; // safe fallback
       }
