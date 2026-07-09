@@ -42,13 +42,13 @@ export default function ProgressIndicator() {
   return (
     <div style={{
       position: 'fixed',
-      right: isMobile ? '3vw' : '2vw',
+      right: isMobile ? '16px' : '2vw',
       top: '50%',
       transform: 'translateY(-50%)',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'flex-end',
-      gap: isMobile ? '0.9rem' : '1.2rem',
+      gap: isMobile ? '0.4rem' : '1.2rem', // slightly reduce gap since padding provides natural spacing
       zIndex: 300,
       pointerEvents: 'auto',
       opacity: visible ? 1 : 0,
@@ -63,7 +63,9 @@ export default function ProgressIndicator() {
             title={s.label}
             style={{
               display: 'flex', alignItems: 'center', gap: '0.6rem',
-              background: 'none', border: 'none', padding: 0, cursor: 'pointer',
+              background: 'none', border: 'none',
+              padding: isMobile ? '10px 8px' : '4px 0',
+              cursor: 'pointer',
             }}
           >
             {/* Label — hidden on mobile */}

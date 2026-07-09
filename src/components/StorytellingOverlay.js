@@ -103,6 +103,14 @@ function SubText({ children, align = 'left' }) {
    MAIN OVERLAY
 ═════════════════════════════════════════════════════════════════════════════*/
 export default function StorytellingOverlay() {
+  const [isMobile, setIsMobile] = React.useState(false);
+  React.useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   const { scrollYProgress } = useScroll();
   const smooth = useSpring(scrollYProgress, { stiffness: 45, damping: 22, restDelta: 0.0002 });
 
@@ -257,27 +265,27 @@ export default function StorytellingOverlay() {
       {/* ══════════════════════════════════════════════════════════════
           FINAL   85 – 100%
       ══════════════════════════════════════════════════════════════ */}
-      <motion.div style={{ ...ABS, display: 'flex', alignItems: 'flex-end', justifyContent: 'flex-end', opacity: opF, y: yF, filter: blF, zIndex: 10 }}>
-        <div className="final-content">
+      <motion.div style={{ ...ABS, display: 'flex', alignItems: 'flex-end', justifyContent: isMobile ? 'center' : 'flex-end', opacity: opF, y: yF, filter: blF, zIndex: 10 }}>
+        <div className="final-content" style={{ textAlign: isMobile ? 'center' : 'right' }}>
 
-          <p style={{ fontSize: '9px', fontWeight: 700, letterSpacing: '0.35em', color: 'rgba(0,0,0,0.28)', textTransform: 'uppercase', marginBottom: '1.4rem' }}>
+          <p style={{ fontSize: '9px', fontWeight: 700, letterSpacing: '0.35em', color: 'rgba(0,0,0,0.28)', textTransform: 'uppercase', marginBottom: '1.4rem', textAlign: isMobile ? 'center' : 'right' }}>
             05 — Built for control
           </p>
 
           <TextMolecules
             text="NIKE PRECISION 7"
             scrollProgress={smooth} exitRange={[2.0, 3.0]}
-            style={{ fontSize: 'clamp(22px, 3.2vw, 52px)', fontWeight: 900, color: '#0D0D0D', letterSpacing: '-0.035em', lineHeight: 0.92, textTransform: 'uppercase', textAlign: 'right' }}
+            style={{ fontSize: 'clamp(22px, 3.2vw, 52px)', fontWeight: 900, color: '#0D0D0D', letterSpacing: '-0.035em', lineHeight: 0.92, textTransform: 'uppercase', textAlign: isMobile ? 'center' : 'right' }}
           />
           <TextMolecules
             text="CONTROL THE GAME."
             scrollProgress={smooth} exitRange={[2.0, 3.0]}
-            style={{ fontSize: 'clamp(22px, 3.2vw, 52px)', fontWeight: 900, color: '#E8291C', letterSpacing: '-0.035em', lineHeight: 0.92, textTransform: 'uppercase', textAlign: 'right' }}
+            style={{ fontSize: 'clamp(22px, 3.2vw, 52px)', fontWeight: 900, color: '#E8291C', letterSpacing: '-0.035em', lineHeight: 0.92, textTransform: 'uppercase', textAlign: isMobile ? 'center' : 'right' }}
           />
 
           <div style={{ width: '100%', height: '1px', background: 'rgba(0,0,0,0.10)', marginTop: '1.4rem', marginBottom: '1.4rem' }} />
 
-          <div className="final-ctas" style={{ display: 'flex', gap: '0.8rem', justifyContent: 'flex-end', pointerEvents: 'auto' }}>
+          <div className="final-ctas" style={{ display: 'flex', gap: '0.8rem', justifyContent: isMobile ? 'center' : 'flex-end', pointerEvents: 'auto' }}>
             <button className="btn btn-primary btn-sm" onClick={() => window.alert('Added to cart!')}>Buy Now</button>
             <button className="btn btn-ghost-dark btn-sm">Explore Specs</button>
           </div>

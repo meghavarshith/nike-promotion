@@ -19,7 +19,7 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className={`navbar${scrolled ? ' scrolled' : ''}`}>
+      <nav className={`navbar${scrolled ? ' scrolled' : ''}${menuOpen ? ' menu-open' : ''}`}>
         <div className="nav-brand" onClick={() => scrollTo(0)} style={{ cursor: 'pointer' }}>
           Nike Precision 7
         </div>

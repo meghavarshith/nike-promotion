@@ -62,7 +62,8 @@ h1,h2,h3,p,ul,li { margin: 0; padding: 0; }
   cursor: pointer;
   z-index: 210;
 }
-.navbar.scrolled .nav-brand { color: rgba(255,255,255,0.90); }
+.navbar.scrolled .nav-brand,
+.navbar.menu-open .nav-brand { color: rgba(255,255,255,0.90); }
 
 .nav-links {
   display: flex; gap: 2.4rem; list-style: none;
@@ -101,7 +102,8 @@ h1,h2,h3,p,ul,li { margin: 0; padding: 0; }
   background: #0D0D0D;
   transition: transform 0.35s var(--ease-out), opacity 0.25s ease, background 0.3s ease;
 }
-.navbar.scrolled .hamburger-line { background: rgba(255,255,255,0.9); }
+.navbar.scrolled .hamburger-line,
+.navbar.menu-open .hamburger-line { background: rgba(255,255,255,0.9); }
 
 .hamburger-line.open:nth-child(1) { transform: translateY(9px) rotate(45deg); }
 .hamburger-line.open:nth-child(2) { opacity: 0; }
@@ -423,13 +425,14 @@ h1,h2,h3,p,ul,li { margin: 0; padding: 0; }
 
   /* ── Final payoff ─────────────────────────────────────────────────────────── */
   .final-content {
-    padding: 0 5vw 4vh !important;
-    text-align: left !important;
+    padding: 0 5vw 6vh !important;
+    text-align: center !important;
     max-width: 100% !important;
+    width: 100%;
   }
 
   .final-ctas {
-    justify-content: flex-start !important;
+    justify-content: center !important;
   }
 
   /* ── Progress indicator: dots only, no labels ─────────────────────────────── */

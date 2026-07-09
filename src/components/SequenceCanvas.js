@@ -115,13 +115,16 @@ export default function SequenceCanvas({ children }) {
     if (!cw || !ch) return;
 
     let s = Math.max(cw / iw, ch / ih);
-    if (cw <= 768) {
+    let yOffset = 0;
+    if (typeof window !== 'undefined' && window.innerWidth <= 768) {
       // Modify scaling for mobile to bound mainly by width (allow letterboxing/slight zoom)
       // This prevents the horizontally animated shoe pieces from flying out of the phone screen
-      s = Math.max((cw / iw) * 2.2, (ch / ih) * 0.55);
+      s = Math.max((cw / iw) * 2.15, (ch / ih) * 0.55);
+      // Shift the image upward to leave space at the bottom for content overlays
+      yOffset = -ch * 0.12;
     }
     
-    ctx.drawImage(img, (cw - iw * s) / 2, (ch - ih * s) / 2, iw * s, ih * s);
+    ctx.drawImage(img, (cw - iw * s) / 2, (ch - ih * s) / 2 + yOffset, iw * s, ih * s);
   }, []);
 
   useEffect(() =>
