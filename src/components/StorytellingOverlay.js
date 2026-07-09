@@ -141,57 +141,67 @@ export default function StorytellingOverlay() {
       {/* ══════════════════════════════════════════════════════════════
           HERO   0 – 20%
       ══════════════════════════════════════════════════════════════ */}
-      <motion.div style={{ ...ABS, display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: opH, y: yH, filter: blH, zIndex: 10 }}>
-        <div className="hero-content" style={{ textAlign: 'center', padding: '0 6vw', maxWidth: '900px' }}>
+      <motion.div style={{ ...ABS, display: 'flex', alignItems: isMobile ? 'stretch' : 'center', justifyContent: 'center', opacity: opH, y: yH, filter: blH, zIndex: 10 }}>
+        <div className="hero-content" style={{ textAlign: 'center', padding: isMobile ? '0' : '0 6vw', maxWidth: isMobile ? '100%' : '900px', width: '100%', height: isMobile ? '100%' : 'auto', display: isMobile ? 'flex' : 'block', flexDirection: 'column' }}>
 
-          <motion.p
-            initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-            className="hero-eyebrow"
-            style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '0.35em', color: 'rgba(0,0,0,0.60)', textTransform: 'uppercase', marginBottom: '1.4rem' }}
-          >
-            01 — Nike Precision Series
-          </motion.p>
+          {/* ── TOP BLOCK: Eyebrow + Titles ── */}
+          <div className="hero-top" style={isMobile ? { paddingTop: '14vh', paddingLeft: '6vw', paddingRight: '6vw' } : {}}>
+            <motion.p
+              initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+              className="hero-eyebrow"
+              style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '0.35em', color: 'rgba(0,0,0,0.60)', textTransform: 'uppercase', marginBottom: '1.4rem' }}
+            >
+              01 — Nike Precision Series
+            </motion.p>
 
-          <TextMolecules
-            text="NIKE PRECISION 7"
-            isHero scrollProgress={smooth} exitRange={[0.13, 0.22]}
-            style={{ fontSize: 'clamp(32px, 5.8vw, 92px)', fontWeight: 900, lineHeight: 0.92, letterSpacing: '-0.035em', color: '#0D0D0D', textTransform: 'uppercase' }}
-          />
-          <TextMolecules
-            text="CONTROL THE GAME."
-            isHero scrollProgress={smooth} exitRange={[0.14, 0.22]}
-            style={{ fontSize: 'clamp(32px, 5.8vw, 92px)', fontWeight: 900, lineHeight: 0.92, letterSpacing: '-0.035em', color: '#E8291C', textTransform: 'uppercase' }}
-          />
+            <TextMolecules
+              text="NIKE PRECISION 7"
+              isHero scrollProgress={smooth} exitRange={[0.13, 0.22]}
+              style={{ fontSize: 'clamp(32px, 5.8vw, 92px)', fontWeight: 900, lineHeight: 0.92, letterSpacing: '-0.035em', color: '#0D0D0D', textTransform: 'uppercase' }}
+            />
+            <TextMolecules
+              text="CONTROL THE GAME."
+              isHero scrollProgress={smooth} exitRange={[0.14, 0.22]}
+              style={{ fontSize: 'clamp(32px, 5.8vw, 92px)', fontWeight: 900, lineHeight: 0.92, letterSpacing: '-0.035em', color: '#E8291C', textTransform: 'uppercase' }}
+            />
+          </div>
 
-          <motion.p
-            initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.1, duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
-            className="hero-tagline"
-            style={{ marginTop: '2rem', fontSize: 'clamp(10px, 0.95vw, 15px)', color: 'rgba(0,0,0,0.65)', letterSpacing: '0.22em', textTransform: 'uppercase', fontWeight: 500 }}
-          >
-            Built for speed. Engineered for precision. Made for champions.
-          </motion.p>
+          {/* ── MIDDLE SPACER: Room for the shoe canvas ── */}
+          {isMobile && <div style={{ flex: 1 }} />}
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.5, duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
-            className="hero-ctas"
-            style={{ display: 'flex', gap: '1rem', justifyContent: 'center', marginTop: '2.8rem', pointerEvents: 'auto' }}
-          >
-            <button className="btn btn-primary" onClick={() => window.alert('Added to cart!')}>Buy Now</button>
-            <button className="btn btn-ghost-dark">Explore Specs</button>
-          </motion.div>
+          {/* ── BOTTOM BLOCK: Tagline + CTAs + Scroll hint ── */}
+          <div className="hero-bottom" style={isMobile ? { paddingLeft: '6vw', paddingRight: '6vw', paddingBottom: '4vh' } : {}}>
+            <motion.p
+              initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.1, duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
+              className="hero-tagline"
+              style={{ marginTop: isMobile ? '0' : '2rem', fontSize: 'clamp(10px, 0.95vw, 15px)', color: 'rgba(0,0,0,0.65)', letterSpacing: '0.18em', fontWeight: 500 }}
+            >
+              Built for speed. Engineered for precision.
+              {!isMobile && ' Made for champions.'}
+            </motion.p>
 
-          <motion.div
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-            transition={{ delay: 2.4, duration: 1.2 }}
-            className="scroll-hint"
-            style={{ marginTop: '3.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.4rem' }}
-          >
-            <span style={{ fontSize: '9px', letterSpacing: '0.3em', color: 'rgba(0,0,0,0.55)', textTransform: 'uppercase', fontWeight: 600 }}>Scroll to explore</span>
-            <div style={{ width: '1px', height: '28px', background: 'linear-gradient(to bottom, rgba(0,0,0,0.55), transparent)', animation: 'scrollPulse 2s ease-in-out infinite' }} />
-          </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.5, duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
+              className="hero-ctas"
+              style={{ display: 'flex', gap: '1rem', justifyContent: 'center', marginTop: isMobile ? '1.4rem' : '2.8rem', pointerEvents: 'auto' }}
+            >
+              <button className="btn btn-primary" onClick={() => window.alert('Added to cart!')}>Buy Now</button>
+              <button className="btn btn-ghost-dark">Explore Specs</button>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+              transition={{ delay: 2.4, duration: 1.2 }}
+              className="scroll-hint"
+              style={{ marginTop: isMobile ? '1.6rem' : '3.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.4rem' }}
+            >
+              <span style={{ fontSize: '9px', letterSpacing: '0.3em', color: 'rgba(0,0,0,0.55)', textTransform: 'uppercase', fontWeight: 600 }}>Scroll to explore</span>
+              <div style={{ width: '1px', height: '28px', background: 'linear-gradient(to bottom, rgba(0,0,0,0.55), transparent)', animation: 'scrollPulse 2s ease-in-out infinite' }} />
+            </motion.div>
+          </div>
 
         </div>
       </motion.div>

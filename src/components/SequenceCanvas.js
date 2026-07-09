@@ -119,9 +119,9 @@ export default function SequenceCanvas({ children }) {
     if (typeof window !== 'undefined' && window.innerWidth <= 768) {
       // Modify scaling for mobile to bound mainly by width (allow letterboxing/slight zoom)
       // This prevents the horizontally animated shoe pieces from flying out of the phone screen
-      s = Math.max((cw / iw) * 2.15, (ch / ih) * 0.55);
-      // Shift the image upward to leave space at the bottom for content overlays
-      yOffset = -ch * 0.12;
+      s = Math.max((cw / iw) * 1.85, (ch / ih) * 0.48);
+      // Center the shoe vertically within the visible gap between title and CTAs
+      yOffset = -ch * 0.06;
     }
     
     ctx.drawImage(img, (cw - iw * s) / 2, (ch - ih * s) / 2 + yOffset, iw * s, ih * s);
