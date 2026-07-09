@@ -145,12 +145,12 @@ export default function StorytellingOverlay() {
         <div className="hero-content" style={{ textAlign: 'center', padding: isMobile ? '0' : '0 6vw', maxWidth: isMobile ? '100%' : '900px', width: '100%', height: isMobile ? '100%' : 'auto', display: isMobile ? 'flex' : 'block', flexDirection: 'column' }}>
 
           {/* ── TOP BLOCK: Eyebrow + Titles ── */}
-          <div className="hero-top" style={isMobile ? { paddingTop: '14vh', paddingLeft: '6vw', paddingRight: '6vw' } : {}}>
+          <div className="hero-top" style={isMobile ? { paddingTop: '8vh', paddingLeft: '6vw', paddingRight: '6vw' } : {}}>
             <motion.p
               initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
               className="hero-eyebrow"
-              style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '0.35em', color: 'rgba(0,0,0,0.60)', textTransform: 'uppercase', marginBottom: '1.4rem' }}
+              style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '0.35em', color: 'rgba(0,0,0,0.60)', textTransform: 'uppercase', marginBottom: '1rem' }}
             >
               01 — Nike Precision Series
             </motion.p>
@@ -158,12 +158,12 @@ export default function StorytellingOverlay() {
             <TextMolecules
               text="NIKE PRECISION 7"
               isHero scrollProgress={smooth} exitRange={[0.13, 0.22]}
-              style={{ fontSize: 'clamp(32px, 5.8vw, 92px)', fontWeight: 900, lineHeight: 0.92, letterSpacing: '-0.035em', color: '#0D0D0D', textTransform: 'uppercase' }}
+              style={{ fontSize: 'clamp(28px, 5.8vw, 92px)', fontWeight: 900, lineHeight: 0.92, letterSpacing: '-0.035em', color: '#0D0D0D', textTransform: 'uppercase', textShadow: isMobile ? '0 1px 8px rgba(255,255,255,0.6)' : 'none' }}
             />
             <TextMolecules
               text="CONTROL THE GAME."
               isHero scrollProgress={smooth} exitRange={[0.14, 0.22]}
-              style={{ fontSize: 'clamp(32px, 5.8vw, 92px)', fontWeight: 900, lineHeight: 0.92, letterSpacing: '-0.035em', color: '#E8291C', textTransform: 'uppercase' }}
+              style={{ fontSize: 'clamp(28px, 5.8vw, 92px)', fontWeight: 900, lineHeight: 0.92, letterSpacing: '-0.035em', color: '#E8291C', textTransform: 'uppercase', textShadow: isMobile ? '0 1px 8px rgba(255,255,255,0.6)' : 'none' }}
             />
           </div>
 
@@ -171,7 +171,7 @@ export default function StorytellingOverlay() {
           {isMobile && <div style={{ flex: 1 }} />}
 
           {/* ── BOTTOM BLOCK: Tagline + CTAs + Scroll hint ── */}
-          <div className="hero-bottom" style={isMobile ? { paddingLeft: '6vw', paddingRight: '6vw', paddingBottom: '4vh' } : {}}>
+          <div className="hero-bottom" style={isMobile ? { paddingLeft: '6vw', paddingRight: '6vw', paddingBottom: '3vh' } : {}}>
             <motion.p
               initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.1, duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
@@ -186,7 +186,7 @@ export default function StorytellingOverlay() {
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.5, duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
               className="hero-ctas"
-              style={{ display: 'flex', gap: '1rem', justifyContent: 'center', marginTop: isMobile ? '1.4rem' : '2.8rem', pointerEvents: 'auto' }}
+              style={{ display: 'flex', gap: '1rem', justifyContent: 'center', marginTop: isMobile ? '1rem' : '2.8rem', pointerEvents: 'auto' }}
             >
               <button className="btn btn-primary" onClick={() => window.alert('Added to cart!')}>Buy Now</button>
               <button className="btn btn-ghost-dark">Explore Specs</button>
@@ -196,10 +196,10 @@ export default function StorytellingOverlay() {
               initial={{ opacity: 0 }} animate={{ opacity: 1 }}
               transition={{ delay: 2.4, duration: 1.2 }}
               className="scroll-hint"
-              style={{ marginTop: isMobile ? '1.6rem' : '3.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.4rem' }}
+              style={{ marginTop: isMobile ? '1rem' : '3.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.3rem' }}
             >
               <span style={{ fontSize: '9px', letterSpacing: '0.3em', color: 'rgba(0,0,0,0.55)', textTransform: 'uppercase', fontWeight: 600 }}>Scroll to explore</span>
-              <div style={{ width: '1px', height: '28px', background: 'linear-gradient(to bottom, rgba(0,0,0,0.55), transparent)', animation: 'scrollPulse 2s ease-in-out infinite' }} />
+              <div style={{ width: '1px', height: '22px', background: 'linear-gradient(to bottom, rgba(0,0,0,0.55), transparent)', animation: 'scrollPulse 2s ease-in-out infinite' }} />
             </motion.div>
           </div>
 

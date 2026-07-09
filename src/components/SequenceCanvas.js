@@ -123,9 +123,19 @@ export default function SequenceCanvas({ children }) {
       ctx.fillRect(0, 0, cw, ch);
     }
 
-    // Use cover scaling on all viewports — shoe fills the entire canvas
-    const s = Math.max(cw / iw, ch / ih);
-    ctx.drawImage(img, (cw - iw * s) / 2, (ch - ih * s) / 2, iw * s, ih * s);
+    // Scale the shoe to fit the viewport
+    let s, yOffset = 0;
+    if (typeof window !== 'undefined' && window.innerWidth <= 768) {
+      // Mobile: scale based on width so the shoe fits in the center
+      // without overflowing vertically or overlapping the text
+      s = (cw / iw) * 1.4;
+      // Shift slightly up to center between top titles and bottom CTAs
+      yOffset = -ch * 0.04;
+    } else {
+      // Desktop: cover the full canvas
+      s = Math.max(cw / iw, ch / ih);
+    }
+    ctx.drawImage(img, (cw - iw * s) / 2, (ch - ih * s) / 2 + yOffset, iw * s, ih * s);
   }, []);
 
   useEffect(() => {
