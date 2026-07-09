@@ -104,7 +104,7 @@ export default function SequenceCanvas({ children }) {
   }, []); // eslint-disable-line
 
   // ── Draw frame ────────────────────────────────────────────────────────────
-  const drawFrame = useCallback((index) => {
+  const drawFrame = useCallback((index, bgLuminance) => {
     const canvas = canvasRef.current;
     const idx    = Math.max(0, Math.min(totalFrames - 1, Math.round(index)));
     const img    = imagesRef.current[idx];
@@ -114,22 +114,24 @@ export default function SequenceCanvas({ children }) {
     const iw = img.naturalWidth, ih = img.naturalHeight;
     if (!cw || !ch) return;
 
-    let s = Math.max(cw / iw, ch / ih);
-    let yOffset = 0;
-    if (typeof window !== 'undefined' && window.innerWidth <= 768) {
-      // Modify scaling for mobile to bound mainly by width (allow letterboxing/slight zoom)
-      // This prevents the horizontally animated shoe pieces from flying out of the phone screen
-      s = Math.max((cw / iw) * 1.85, (ch / ih) * 0.48);
-      // Center the shoe vertically within the visible gap between title and CTAs
-      yOffset = -ch * 0.06;
+    // Fill the canvas with the current background luminance before drawing
+    // This eliminates the black-bar mismatch on mobile where the shoe
+    // image doesn't cover the full canvas
+    if (bgLuminance !== undefined) {
+      const v = Math.round(Math.max(0, Math.min(255, bgLuminance * 2.55)));
+      ctx.fillStyle = `rgb(${v},${v},${v})`;
+      ctx.fillRect(0, 0, cw, ch);
     }
-    
-    ctx.drawImage(img, (cw - iw * s) / 2, (ch - ih * s) / 2 + yOffset, iw * s, ih * s);
+
+    // Use cover scaling on all viewports — shoe fills the entire canvas
+    const s = Math.max(cw / iw, ch / ih);
+    ctx.drawImage(img, (cw - iw * s) / 2, (ch - ih * s) / 2, iw * s, ih * s);
   }, []);
 
-  useEffect(() =>
-    frameIndex.on('change', (v) => drawFrame(v))
-  , [frameIndex, drawFrame]);
+  useEffect(() => {
+    const unsub = frameIndex.on('change', (v) => drawFrame(v, bgL.get()));
+    return unsub;
+  }, [frameIndex, drawFrame, bgL]);
 
   useEffect(() => {
     const onResize = () => {
@@ -138,12 +140,12 @@ export default function SequenceCanvas({ children }) {
       const dpr = window.devicePixelRatio || 1;
       c.width  = window.innerWidth  * dpr;
       c.height = window.innerHeight * dpr;
-      drawFrame(frameIndex.get());
+      drawFrame(frameIndex.get(), bgL.get());
     };
     onResize();
     window.addEventListener('resize', onResize);
     return () => window.removeEventListener('resize', onResize);
-  }, [frameIndex, drawFrame]);
+  }, [frameIndex, drawFrame, bgL]);
 
   return (
     <div
